@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>xdilla - Pelacak Lamaran Kerja</title>
+    <meta name="description" content="Aplikasi mobile-friendly untuk melacak lamaran kerja dengan fitur kalender interview">
+    <meta name="theme-color" content="#e91e63">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-circle" id="logo-circle">
+                    <i class="fas fa-briefcase"></i>
+                    <img id="custom-logo" src="" alt="Custom Logo" style="display: none;">
+                </div>
+            </div>
+            <h1 class="app-title">xdilla</h1>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </button>
+            <button class="tab-btn" data-tab="jobs">
+                <i class="fas fa-briefcase"></i>
+                <span>Lamaran</span>
+            </button>
+            <button class="tab-btn" data-tab="calendar">
+                <i class="fas fa-calendar"></i>
+                <span>Kalender</span>
+            </button>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard">
+            <div class="card stats-card">
+                <div class="illustration-area">
+                    <div class="stats-illustration">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <h3>Ringkasan Lamaran</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-applied">0</span>
+                            <span class="stat-label">Total Lamar</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-interviews">0</span>
+                            <span class="stat-label">Interview</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-offers">0</span>
+                            <span class="stat-label">Tawaran</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-hired">0</span>
+                            <span class="stat-label">Diterima</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card recent-activity-card">
+                <div class="content-area">
+                    <h3>Aktivitas Terbaru</h3>
+                    <div class="recent-jobs" id="recent-jobs">
+                        <p class="empty-state">Belum ada lamaran. Tambahkan lamaran pertama Anda!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobs Tab -->
+        <div class="tab-content" id="jobs">
+            <div class="jobs-header">
+                <h2>Daftar Lamaran</h2>
+                <button class="add-btn" id="add-job-btn">
+                    <i class="fas fa-plus"></i>
+                    Tambah Lamaran
+                </button>
+            </div>
+
+            <div class="filter-section">
+                <select id="status-filter">
+                    <option value="">Semua Status</option>
+                    <option value="applied">Dilamar</option>
+                    <option value="interview">Interview</option>
+                    <option value="offer">Tawaran</option>
+                    <option value="hired">Diterima</option>
+                    <option value="rejected">Ditolak</option>
+                </select>
+            </div>
+
+            <div class="jobs-list" id="jobs-list">
+                <!-- Job items will be populated here -->
+            </div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div class="tab-content" id="calendar">
+            <div class="calendar-header">
+                <h2>Kalender Interview</h2>
+                <div class="view-switcher">
+                    <button class="view-btn active" data-view="month">Bulan</button>
+                    <button class="view-btn" data-view="week">Minggu</button>
+                    <button class="view-btn" data-view="day">Hari</button>
+                </div>
+            </div>
+
+            <div class="calendar-navigation">
+                <button id="prev-period"><i class="fas fa-chevron-left"></i></button>
+                <span id="current-period">Desember 2024</span>
+                <button id="next-period"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <div class="calendar-container">
+                <div class="calendar-view" id="month-view">
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Calendar will be populated here -->
+                    </div>
+                </div>
+
+                <div class="calendar-view" id="week-view" style="display: none;">
+                    <!-- Week view content -->
+                </div>
+
+                <div class="calendar-view" id="day-view" style="display: none;">
+                    <!-- Day view content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Jobs -->
+    <div class="modal" id="job-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Tambah Lamaran Baru</h3>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <form class="job-form" id="job-form">
+                <div class="form-group">
+                    <label for="company-name">Nama Perusahaan *</label>
+                    <input type="text" id="company-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="position">Posisi *</label>
+                    <input type="text" id="position" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status *</label>
+                    <select id="status" required>
+                        <option value="">Pilih Status</option>
+                        <option value="applied">Dilamar</option>
+                        <option value="interview">Interview</option>
+                        <option value="offer">Tawaran</option>
+                        <option value="hired">Diterima</option>
+                        <option value="rejected">Ditolak</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="source">Sumber/Link</label>
+                    <input type="url" id="source" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label for="applied-date">Tanggal Lamar *</label>
+                    <input type="date" id="applied-date" required>
+                </div>
+
+                <div class="form-group" id="interview-date-group" style="display: none;">
+                    <label for="interview-date">Tanggal Interview</label>
+                    <input type="datetime-local" id="interview-date">
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Catatan</label>
+                    <textarea id="notes" rows="3" placeholder="Catatan tambahan..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-btn">Batal</button>
+                    <button type="submit" class="btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Konfirmasi</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">Apakah Anda yakin ingin menghapus lamaran ini?</p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" id="confirm-cancel">Batal</button>
+                <button type="button" class="btn-danger" id="confirm-ok">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logo upload modal removed - logo is now permanent -->
+
+    <script src="script.js"></script>
+</body>
+</html>
